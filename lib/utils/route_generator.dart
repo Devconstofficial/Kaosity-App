@@ -41,10 +41,7 @@ class RouteGenerator {
           name: kHomeScreenRoute,
           page: () => HomeScreen(),
           binding: ScreenBindings()),
-      GetPage(
-          name: kViewVideoScreenRoute,
-          page: () => ViewVideoScreen(),
-          binding: ScreenBindings()),
+      
     ];
   }
 }

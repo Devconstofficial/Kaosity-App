@@ -8,6 +8,6 @@ class ScreenBindings extends Bindings {
   void dependencies() {
     Get.lazyPut(() => AuthController());
     Get.lazyPut(() => HomeController());
-    Get.lazyPut(() => ViewVideoController());
+
   }
 }
