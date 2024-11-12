@@ -98,7 +98,7 @@ class HomeScreen extends StatelessWidget {
   Widget buildFeaturedContent(FeaturedContent content) {
     return InkWell(
       onTap: () {
-      
+        Get.toNamed(kViewVideoScreenRoute);
       },
       child: Container(
         width: getWidth(396),
@@ -209,7 +209,7 @@ class HomeScreen extends StatelessWidget {
   Widget buildContentItem(ContentItem item) {
     return InkWell(
       onTap: () {
-       
+        Get.toNamed(kViewVideoScreenRoute);
       },
       child: Container(
         width: getWidth(170),

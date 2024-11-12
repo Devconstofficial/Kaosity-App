@@ -6,6 +6,7 @@ import 'package:kaosity_app/screens/home/home_screen.dart';
 import 'package:kaosity_app/screens/starting_screens/disclaimer_screen.dart';
 import 'package:kaosity_app/screens/starting_screens/dont_agree_screen.dart';
 import 'package:kaosity_app/screens/starting_screens/splash_screen.dart';
+import 'package:kaosity_app/screens/view_video/view_video_screen.dart';
 import 'package:kaosity_app/utils/app_strings.dart';
 import 'package:kaosity_app/utils/screen_bindings.dart';
 
@@ -39,6 +40,10 @@ class RouteGenerator {
       GetPage(
           name: kHomeScreenRoute,
           page: () => HomeScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kViewVideoScreenRoute,
+          page: () => ViewVideoScreen(),
           binding: ScreenBindings()),
     ];
   }
