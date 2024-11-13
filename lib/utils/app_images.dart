@@ -15,6 +15,10 @@ String kSendIcon = "$basePathIcons/send.png";
 String kStatusIcon = "$basePathIcons/status.png";
 String kStatus1Icon = "$basePathIcons/status1.png";
 String kStatus2Icon = "$basePathIcons/status2.png";
+String kPointsIcon = "$basePathIcons/points.png";
+String kTimeIcon = "$basePathIcons/time.png";
+String kWorldIcon = "$basePathIcons/world.png";
+String kArrowsIcon = "$basePathIcons/arrows.png";
 
 ///IMAGES
 String kLogo = "$basePath/logo.png";
