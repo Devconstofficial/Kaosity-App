@@ -18,7 +18,7 @@ class AuthController extends GetxController {
     if (username.isEmpty || password.isEmpty) {
       showCustomSnackbar("Error", "Username and Password cannot be empty");
     } else {
-      Get.toNamed(kSplashScreenRoute);
+      Get.offAllNamed(kSplashScreenRoute);
     }
   }
 
@@ -30,7 +30,7 @@ class AuthController extends GetxController {
     if (username.isEmpty || password.isEmpty || email.isEmpty) {
       showCustomSnackbar("Error", "Fields cannot be empty");
     } else {
-      Get.toNamed(kSplashScreenRoute);
+      Get.offAllNamed(kSplashScreenRoute);
     }
   }
 

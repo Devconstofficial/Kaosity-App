@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:kaosity_app/models/content_section_model.dart';
+import 'package:kaosity_app/screens/view_video/controller/view_video_controller.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
 import 'package:kaosity_app/utils/app_images.dart';
 
 class HomeController extends GetxController {
+  final ViewVideoController controller = Get.find();
   var featuredContent = FeaturedContent(
     title: 'Escape Live',
     subtitle: 'Episode 1',
@@ -18,6 +20,9 @@ class HomeController extends GetxController {
 
   var sections = <ContentSection>[].obs;
   var isMenuVisible = false.obs;
+  var isSearchVisible = false.obs;
+  var searchQuery = ''.obs;
+  var searchedSections = <ContentSection>[].obs;
 
   void toggleMenu() {
     isMenuVisible.value = !isMenuVisible.value;
@@ -137,5 +142,22 @@ class HomeController extends GetxController {
         ],
       ),
     ];
+  }
+
+  void toggleSearch() {
+    isSearchVisible.value = !isSearchVisible.value;
+  }
+
+  void searchShows(String query) {
+    searchQuery.value = query;
+    searchedSections.value = sections
+        .map((section) => ContentSection(
+              sectionTitle: section.sectionTitle,
+              items: section.items
+                  .where((item) =>
+                      item.title.toLowerCase().contains(query.toLowerCase()))
+                  .toList(),
+            ))
+        .toList();
   }
 }

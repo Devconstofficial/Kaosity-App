@@ -7,3 +7,4 @@ const String kRegisterScreenRoute = '/RegisterScreenRoute';
 const String kForgotPasswordScreenRoute = '/ForgotPasswordScreenRoute';
 const String kHomeScreenRoute = '/HomeScreenRoute';
 const String kViewVideoScreenRoute = '/ViewVideoScreenRoute';
+const String kProfileScreenRoute = '/ProfileScreenRoute';

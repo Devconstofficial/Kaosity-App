@@ -19,6 +19,7 @@ String kPointsIcon = "$basePathIcons/points.png";
 String kTimeIcon = "$basePathIcons/time.png";
 String kWorldIcon = "$basePathIcons/world.png";
 String kArrowsIcon = "$basePathIcons/arrows.png";
+String kTickIcon = "$basePathIcons/tick.png";
 
 ///IMAGES
 String kLogo = "$basePath/logo.png";
@@ -33,3 +34,4 @@ String kThumbImage7 = "$basePath/img7.png";
 String kThumbImage8 = "$basePath/img8.png";
 String kThumbImage9 = "$basePath/img9.png";
 String kThumbImage10 = "$basePath/img10.png";
+String kAvatar = "$basePath/avatar.png";

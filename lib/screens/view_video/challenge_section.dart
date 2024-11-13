@@ -56,22 +56,29 @@ class ChallengeSection extends StatelessWidget {
             SizedBox(height: getHeight(6)),
             Row(
               children: [
-                Container(
-                  height: getHeight(28),
-                  width: getWidth(64),
-                  decoration: BoxDecoration(
-                      color: controller.isChallengeActive.value
-                          ? kPrimaryColor
-                          : (controller.isEnabled.value
-                              ? kBlackShade3Color
-                              : kBlackShade2Color),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Center(
-                    child: Image.asset(
-                      kPuzzleIcon,
-                      height: getHeight(18),
-                      width: getWidth(18),
-                      color: controller.isEnabled.value ? Colors.white : null,
+                InkWell(
+                  onTap: () {
+                    if (controller.isChallengeActive.value) {
+                      controller.showPuzzleStart.value = true;
+                    }
+                  },
+                  child: Container(
+                    height: getHeight(28),
+                    width: getWidth(64),
+                    decoration: BoxDecoration(
+                        color: controller.isChallengeActive.value
+                            ? kPrimaryColor
+                            : (controller.isEnabled.value
+                                ? kBlackShade3Color
+                                : kBlackShade2Color),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Center(
+                      child: Image.asset(
+                        kPuzzleIcon,
+                        height: getHeight(18),
+                        width: getWidth(18),
+                        color: controller.isEnabled.value ? Colors.white : null,
+                      ),
                     ),
                   ),
                 ),

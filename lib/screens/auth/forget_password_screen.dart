@@ -49,7 +49,6 @@ class ForgetPasswordScreen extends StatelessWidget {
               CustomTextField(
                 controller: authController.emailForgetController,
                 hintText: 'Email',
-                isObscure: true,
               ),
               SizedBox(height: getHeight(80)),
               CustomButton(
