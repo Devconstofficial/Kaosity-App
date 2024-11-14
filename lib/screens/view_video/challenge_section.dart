@@ -58,9 +58,9 @@ class ChallengeSection extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    if (controller.isChallengeActive.value) {
-                      controller.showPuzzleStart.value = true;
-                    }
+                    // if (controller.isChallengeActive.value) {
+                    //   controller.showPuzzleStart.value = true;
+                    // }
                   },
                   child: Container(
                     height: getHeight(28),

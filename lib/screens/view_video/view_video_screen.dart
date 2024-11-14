@@ -8,6 +8,7 @@ import 'package:kaosity_app/screens/view_video/controller/view_video_controller.
 import 'package:kaosity_app/screens/view_video/puzzle_board.dart';
 import 'package:kaosity_app/screens/view_video/puzzle_section.dart';
 import 'package:kaosity_app/screens/view_video/video_player_widget.dart';
+import 'package:kaosity_app/screens/view_video/voting_UI.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
 import 'package:kaosity_app/utils/app_styles.dart';
 import 'package:video_player/video_player.dart';
@@ -51,6 +52,15 @@ class ViewVideoScreen extends StatelessWidget {
                               Obx(() => controller.showProgress.value
                                   ? const AudienceProgress()
                                   : const SizedBox.shrink()),
+                              Obx(() {
+                                if (controller.showResults.value) {
+                                  return VotingResults();
+                                } else if (controller.showVoting.value) {
+                                  return VotingUI();
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              }),
                             ],
                           ),
                           Positioned(
@@ -101,6 +111,15 @@ class ViewVideoScreen extends StatelessWidget {
                           Obx(() => controller.showProgress.value
                               ? const AudienceProgress()
                               : const SizedBox.shrink()),
+                          Obx(() {
+                            if (controller.showResults.value) {
+                              return VotingResults();
+                            } else if (controller.showVoting.value) {
+                              return VotingUI();
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          }),
                           SizedBox(height: getHeight(23)),
                           Obx(() => controller.isPuzzleActive.value
                               ? SizedBox(
