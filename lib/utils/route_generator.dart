@@ -3,6 +3,7 @@ import 'package:kaosity_app/screens/auth/forget_password_screen.dart';
 import 'package:kaosity_app/screens/auth/login_screen.dart';
 import 'package:kaosity_app/screens/auth/register_screen.dart';
 import 'package:kaosity_app/screens/home/home_screen.dart';
+import 'package:kaosity_app/screens/profile/profile_screen.dart';
 import 'package:kaosity_app/screens/starting_screens/disclaimer_screen.dart';
 import 'package:kaosity_app/screens/starting_screens/dont_agree_screen.dart';
 import 'package:kaosity_app/screens/starting_screens/splash_screen.dart';
@@ -44,6 +45,10 @@ class RouteGenerator {
       GetPage(
           name: kViewVideoScreenRoute,
           page: () => ViewVideoScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kProfileScreenRoute,
+          page: () => ProfileScreen(),
           binding: ScreenBindings()),
     ];
   }

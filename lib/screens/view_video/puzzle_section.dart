@@ -67,7 +67,13 @@ class PuzzleSection extends StatelessWidget {
                   width: 66,
                   title: 'Skip',
                   textColor: kBgColor,
-                  onTap: () {},
+                  onTap: () {
+                    controller.isChallengeActive.value = false;
+                    controller.showPuzzleStart.value = false;
+                    Future.delayed(const Duration(seconds: 2), () {
+                      controller.isChallengeActive.value = true;
+                    });
+                  },
                 ),
                 SizedBox(height: getHeight(20)),
               ],

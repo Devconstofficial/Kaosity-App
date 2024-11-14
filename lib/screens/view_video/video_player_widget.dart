@@ -15,42 +15,53 @@ class VideoPlayerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      final currentPosition = controller.currentPosition.value;
+      final duration = controller.videoController.value.duration;
       return Stack(
         alignment: Alignment.center,
         children: [
           SizedBox(
-            height: getHeight(232),
+            height: controller.isFullScreen.value
+                ? double.infinity
+                : getHeight(232),
             width: double.infinity,
             child: AspectRatio(
               aspectRatio: controller.videoController.value.aspectRatio,
               child: VideoPlayer(controller.videoController),
             ),
           ),
-          Positioned(
-            top: getHeight(7),
-            left: getWidth(14),
-            child: Container(
-              height: getHeight(18),
-              width: getWidth(41),
-              decoration: BoxDecoration(
-                color: kRedColor,
-                borderRadius: BorderRadius.circular(3),
-              ),
-              child: Center(
-                child: Text(
-                  'LIVE',
-                  style: AppStyles.whiteTextStyle()
-                      .copyWith(fontWeight: FontWeight.w700, fontSize: 13.sp),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: getHeight(11),
-            right: getWidth(17),
-            child: Icon(Icons.keyboard_arrow_down,
-                color: kWhiteColor, size: 20.sp),
-          ),
+          // Positioned(
+          //   top: getHeight(7),
+          //   left: getWidth(14),
+          //   child: Container(
+          //     height: getHeight(18),
+          //     width: getWidth(41),
+          //     decoration: BoxDecoration(
+          //       color: kRedColor,
+          //       borderRadius: BorderRadius.circular(3),
+          //     ),
+          //     child: Center(
+          //       child: Text(
+          //         'LIVE',
+          //         style: AppStyles.whiteTextStyle()
+          //             .copyWith(fontWeight: FontWeight.w700, fontSize: 13.sp),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          !controller.isFullScreen.value
+              ? Positioned(
+                  top: getHeight(11),
+                  right: getWidth(17),
+                  child: InkWell(
+                    onTap: () {
+                      controller.toggleVideoSize();
+                    },
+                    child: Icon(Icons.keyboard_arrow_down,
+                        color: kWhiteColor, size: 20.sp),
+                  ),
+                )
+              : const SizedBox.shrink(),
           Positioned(
             bottom: getHeight(14),
             left: getWidth(22),
@@ -62,8 +73,8 @@ class VideoPlayerWidget extends StatelessWidget {
                   controller.videoController,
                   allowScrubbing: true,
                   colors: VideoProgressColors(
-                    playedColor: kWhiteColor,
-                    bufferedColor: Colors.white.withOpacity(0.5),
+                    playedColor: kGreyColor.withOpacity(0.5),
+                    bufferedColor: kGreyShade3Color,
                     backgroundColor: kGreyShade3Color,
                   ),
                 ),
@@ -82,23 +93,30 @@ class VideoPlayerWidget extends StatelessWidget {
                     ),
                     SizedBox(width: getWidth(10)),
                     Text(
-                      '${controller.videoController.value.position.inMinutes.remainder(60).toString().padLeft(2, '0')}:${controller.videoController.value.position.inSeconds.remainder(60).toString().padLeft(2, '0')} / ${controller.videoController.value.duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${controller.videoController.value.duration.inSeconds.remainder(60).toString().padLeft(2, '0')}',
+                      '${currentPosition.inMinutes.remainder(60).toString().padLeft(2, '0')}:${currentPosition.inSeconds.remainder(60).toString().padLeft(2, '0')} / '
+                      '${duration.inMinutes.remainder(60).toString().padLeft(2, '0')}:${duration.inSeconds.remainder(60).toString().padLeft(2, '0')}',
                       style: AppStyles.whiteTextStyle().copyWith(
                           fontSize: 12.sp, fontWeight: FontWeight.w700),
                     ),
                     const Spacer(),
-                    Image.asset(
-                      kArrowsIcon,
-                      height: getHeight(12),
-                      width: getWidth(16),
-                      color: kWhiteColor,
+                    GestureDetector(
+                      onTap: () {
+                        controller.toggleFullScreen();
+                      },
+                      child: Image.asset(
+                        kArrowsIcon,
+                        height:
+                            getHeight(controller.isFullScreen.value ? 30 : 12),
+                        width: getWidth(16),
+                        color: kWhiteColor,
+                      ),
                     )
                   ],
                 ),
               ],
             ),
           ),
-          controller.isChallengeActive.value
+          (controller.isChallengeActive.value && !controller.isFullScreen.value)
               ? Positioned(
                   bottom: getHeight(75),
                   right: 0,

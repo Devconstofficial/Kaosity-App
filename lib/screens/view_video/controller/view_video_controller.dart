@@ -1,6 +1,7 @@
 import 'dart:async'; // Import this package for Timer
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kaosity_app/models/comment_model.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
@@ -11,6 +12,8 @@ class ViewVideoController extends GetxController {
   // Video Controller
   late VideoPlayerController videoController;
   var isPlaying = false.obs;
+  var isFullScreen = false.obs;
+  var isSmallVideo = false.obs;
 
   // Puzzle
   var isEnabled = false.obs;
@@ -24,10 +27,15 @@ class ViewVideoController extends GetxController {
   var userAnswers = <String, String>{}.obs;
   var showSuccess = false.obs;
   var showFailure = false.obs;
+  var showProgress = false.obs;
+  final Map<String, TextEditingController> textControllers = {};
+  final Map<String, FocusNode> focusNodes = {};
 
   // Comments
   var comments = <Comment>[].obs;
   final TextEditingController commentController = TextEditingController();
+
+  var currentPosition = Duration.zero.obs;
 
   @override
   void onInit() {
@@ -51,23 +59,33 @@ class ViewVideoController extends GetxController {
           icon: kStatus2Icon,
           nameColor: kRedShadeColor),
     ]);
-    Timer(const Duration(seconds: 5), () {
-      isEnabled.value = true;
-      Timer(const Duration(seconds: 3), () {
-        isChallengeActive.value = true;
-        Timer(const Duration(seconds: 2), () {
-          showPuzzleStart.value = true;
+    Future.delayed(const Duration(seconds: 3), () {
+      Timer(const Duration(seconds: 4), () {
+        isEnabled.value = true;
+        Timer(const Duration(seconds: 3), () {
+          isChallengeActive.value = true;
         });
       });
     });
   }
 
   void initializeVideo() {
-    videoController = VideoPlayerController.networkUrl(
-      Uri.parse('https://samplelib.com/lib/preview/mp4/sample-5s.mp4'),
+    videoController = VideoPlayerController.asset(
+      'assets/video.mp4',
     )..initialize().then((_) {
         update();
       });
+
+    videoController.addListener(() {
+      currentPosition.value = videoController.value.position;
+
+      if (videoController.value.position >= videoController.value.duration) {
+        isPlaying.value = false;
+        videoController.seekTo(Duration.zero);
+      }
+
+      update();
+    });
   }
 
   void togglePlayPause() {
@@ -102,6 +120,21 @@ class ViewVideoController extends GetxController {
     });
   }
 
+  void runRemainingTimer() {
+    timerRunning.value = true;
+    timeLeft.value = timeLeft.value;
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!timerRunning.value) {
+        timer.cancel();
+      } else if (timeLeft.value > 0) {
+        timeLeft.value--;
+        if (timeLeft.value == 0) {
+          timer.cancel();
+        }
+      }
+    });
+  }
+
   void submitAnswer(String clue, String answer) {
     userAnswers[clue] = answer;
 
@@ -129,11 +162,9 @@ class ViewVideoController extends GetxController {
       puzzleCompleted.value = true;
       timerRunning.value = false;
       showSuccess.value = true;
-      isPuzzleActive.value = false;
     } else if (timeLeft.value == 0) {
       showFailure.value = !allCorrect;
       showSuccess.value = allCorrect;
-      isPuzzleActive.value = false;
     }
   }
 
@@ -147,6 +178,24 @@ class ViewVideoController extends GetxController {
           icon: kStatusIcon));
       commentController.clear();
     }
+  }
+
+  void toggleFullScreen() {
+    isFullScreen.value = !isFullScreen.value;
+
+    if (isFullScreen.value) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    }
+  }
+
+  void toggleVideoSize() {
+    isSmallVideo.value = true;
+    Get.back();
   }
 
   @override

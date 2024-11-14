@@ -7,6 +7,7 @@ import 'package:kaosity_app/utils/app_images.dart';
 import 'package:kaosity_app/utils/app_strings.dart';
 import 'package:kaosity_app/utils/app_styles.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:video_player/video_player.dart';
 
 class HomeScreen extends StatelessWidget {
   final HomeController homeController = Get.find();
@@ -19,17 +20,49 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: kBgColor,
       appBar: AppBar(
         backgroundColor: kBgColor,
+        surfaceTintColor: kBgColor,
         automaticallyImplyLeading: false,
-        title: Image.asset(
-          kLogo,
-          height: getHeight(36),
-          width: getWidth(193),
+        title: Stack(
+          children: [
+            Obx(
+              () => Opacity(
+                opacity: homeController.isSearchVisible.value ? 0.1 : 1.0,
+                child: Image.asset(
+                  kLogo,
+                  height: getHeight(36),
+                  width: getWidth(193),
+                ),
+              ),
+            ),
+            Obx(() => Visibility(
+                  visible: homeController.isSearchVisible.value,
+                  child: TextField(
+                    style: AppStyles.whiteTextStyle().copyWith(fontSize: 16.sp),
+                    decoration: InputDecoration(
+                      hintText: 'Search shows...',
+                      hintStyle:
+                          AppStyles.whiteTextStyle().copyWith(fontSize: 14.sp),
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: kWhiteColor,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    onChanged: (text) {
+                      homeController.searchShows(text);
+                    },
+                  ),
+                )),
+          ],
         ),
         actions: [
-          Image.asset(
-            kSearchIcon,
-            height: getHeight(24),
-            width: getWidth(24),
+          GestureDetector(
+            onTap: homeController.toggleSearch,
+            child: Image.asset(
+              kSearchIcon,
+              height: getHeight(24),
+              width: getWidth(24),
+            ),
           ),
           SizedBox(width: getWidth(19)),
           GestureDetector(
@@ -51,9 +84,13 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: getHeight(30)),
                 buildFeaturedContent(homeController.featuredContent.value),
                 SizedBox(height: getHeight(31)),
-                ...homeController.sections
-                    .map((section) => buildSection(section))
-                    .toList(),
+                ...homeController.searchQuery.value.isEmpty
+                    ? homeController.sections
+                        .map((section) => buildSection(section))
+                        .toList()
+                    : homeController.searchedSections
+                        .map((section) => buildSection(section))
+                        .toList(),
               ],
             );
           }),
@@ -69,16 +106,28 @@ class HomeScreen extends StatelessWidget {
                   color: kBgColor,
                   child: Column(
                     children: [
-                      Text(
-                        'Home',
-                        style: AppStyles.whiteTextStyle()
-                            .copyWith(fontSize: 16.sp),
+                      InkWell(
+                        onTap: () {
+                          homeController.isMenuVisible.value = false;
+                          Get.toNamed(kHomeScreenRoute);
+                        },
+                        child: Text(
+                          'Home',
+                          style: AppStyles.whiteTextStyle()
+                              .copyWith(fontSize: 16.sp),
+                        ),
                       ),
                       SizedBox(height: getHeight(18)),
-                      Text(
-                        'Profile',
-                        style: AppStyles.whiteTextStyle()
-                            .copyWith(fontSize: 16.sp),
+                      InkWell(
+                        onTap: () {
+                          homeController.isMenuVisible.value = false;
+                          Get.toNamed(kProfileScreenRoute);
+                        },
+                        child: Text(
+                          'Profile',
+                          style: AppStyles.whiteTextStyle()
+                              .copyWith(fontSize: 16.sp),
+                        ),
                       ),
                       SizedBox(height: getHeight(18)),
                       Text(
@@ -90,6 +139,65 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               )),
+          Obx(
+            () => homeController.controller.isSmallVideo.value
+                ? Positioned(
+                    bottom: getHeight(25),
+                    right: getWidth(18),
+                    child: SizedBox(
+                      height: getHeight(120),
+                      width: getWidth(200),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              if (homeController
+                                  .controller.isSmallVideo.value) {
+                                homeController.controller.isSmallVideo.value =
+                                    false;
+                              }
+                              Get.toNamed(kViewVideoScreenRoute);
+                            },
+                            child: AspectRatio(
+                              aspectRatio: homeController
+                                  .controller.videoController.value.aspectRatio,
+                              child: VideoPlayer(
+                                  homeController.controller.videoController),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: homeController.controller.togglePlayPause,
+                            child: Icon(
+                              homeController.controller.isPlaying.value
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                              color: homeController.controller.isPlaying.value
+                                  ? kWhiteColor.withOpacity(0.3)
+                                  : kWhiteColor,
+                            ),
+                          ),
+                          Positioned(
+                            top: getHeight(8),
+                            right: getWidth(8),
+                            child: InkWell(
+                              onTap: () {
+                                homeController.controller.isSmallVideo.value =
+                                    false;
+                              },
+                              child: Icon(
+                                Icons.close,
+                                color: kWhiteColor,
+                                size: 16.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
     );
@@ -98,12 +206,17 @@ class HomeScreen extends StatelessWidget {
   Widget buildFeaturedContent(FeaturedContent content) {
     return InkWell(
       onTap: () {
+        if (homeController.controller.isSmallVideo.value) {
+          homeController.controller.isSmallVideo.value = false;
+        }
         Get.toNamed(kViewVideoScreenRoute);
       },
       child: Container(
         width: getWidth(396),
         height: getHeight(358),
         margin: EdgeInsets.symmetric(horizontal: getWidth(17)),
+        decoration: BoxDecoration(
+            color: kBlackShade1Color, borderRadius: BorderRadius.circular(10)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -140,33 +253,39 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             SizedBox(height: getHeight(7)),
-            Row(
-              children: content.tags.map((tag) {
-                return Container(
-                  height: getHeight(17),
-                  margin: EdgeInsets.only(right: getWidth(8)),
-                  padding: EdgeInsets.symmetric(horizontal: getWidth(11)),
-                  decoration: BoxDecoration(
-                    color: tag.color,
-                    borderRadius: BorderRadius.circular(4.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      tag.name,
-                      style: AppStyles.blackTextStyle().copyWith(
-                          color: kBgColor,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w400),
+            Padding(
+              padding: EdgeInsets.only(left: getWidth(10)),
+              child: Row(
+                children: content.tags.map((tag) {
+                  return Container(
+                    height: getHeight(17),
+                    margin: EdgeInsets.only(right: getWidth(8)),
+                    padding: EdgeInsets.symmetric(horizontal: getWidth(11)),
+                    decoration: BoxDecoration(
+                      color: tag.color,
+                      borderRadius: BorderRadius.circular(4.0),
                     ),
-                  ),
-                );
-              }).toList(),
+                    child: Center(
+                      child: Text(
+                        tag.name,
+                        style: AppStyles.blackTextStyle().copyWith(
+                            color: kBgColor,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
-            SizedBox(height: getHeight(10)),
-            Text(
-              content.schedule,
-              style: AppStyles.whiteTextStyle()
-                  .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w400),
+            SizedBox(height: getHeight(8)),
+            Padding(
+              padding: EdgeInsets.only(left: getWidth(10)),
+              child: Text(
+                content.schedule,
+                style: AppStyles.whiteTextStyle()
+                    .copyWith(fontSize: 16.sp, fontWeight: FontWeight.w400),
+              ),
             ),
           ],
         ),
@@ -209,6 +328,9 @@ class HomeScreen extends StatelessWidget {
   Widget buildContentItem(ContentItem item) {
     return InkWell(
       onTap: () {
+        if (homeController.controller.isSmallVideo.value) {
+          homeController.controller.isSmallVideo.value = false;
+        }
         Get.toNamed(kViewVideoScreenRoute);
       },
       child: Container(
