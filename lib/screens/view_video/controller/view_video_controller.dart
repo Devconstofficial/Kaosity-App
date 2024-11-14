@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:kaosity_app/models/comment_model.dart';
+import 'package:kaosity_app/models/voting_model.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
 import 'package:kaosity_app/utils/app_images.dart';
 import 'package:video_player/video_player.dart';
@@ -23,13 +24,19 @@ class ViewVideoController extends GetxController {
   var showPuzzleStart = false.obs;
   var puzzleCompleted = false.obs;
   var timerRunning = false.obs;
-  var timeLeft = 600.obs;
+  var timeLeft = 240.obs;
   var userAnswers = <String, String>{}.obs;
   var showSuccess = false.obs;
   var showFailure = false.obs;
   var showProgress = false.obs;
   final Map<String, TextEditingController> textControllers = {};
   final Map<String, FocusNode> focusNodes = {};
+  var showVoting = false.obs;
+  var votingTimer = 106.obs;
+  var showResults = false.obs;
+  var votingOptions = <VotingOption>[].obs;
+  var totalVotes = 0.obs;
+  var showThirdPuzzle = false.obs;
 
   // Comments
   var comments = <Comment>[].obs;
@@ -59,14 +66,33 @@ class ViewVideoController extends GetxController {
           icon: kStatus2Icon,
           nameColor: kRedShadeColor),
     ]);
-    Future.delayed(const Duration(seconds: 3), () {
-      Timer(const Duration(seconds: 4), () {
-        isEnabled.value = true;
-        Timer(const Duration(seconds: 3), () {
-          isChallengeActive.value = true;
-        });
-      });
-    });
+
+    votingOptions.addAll([
+      VotingOption(
+        name: "Ben",
+        image: kUser1,
+        percentage: 23.obs,
+        isSelected: false.obs,
+      ),
+      VotingOption(
+        name: "Courtney",
+        image: kUser2,
+        percentage: 89.obs,
+        isSelected: false.obs,
+      ),
+      VotingOption(
+        name: "Lisa",
+        image: kUser3,
+        percentage: 12.obs,
+        isSelected: false.obs,
+      ),
+      VotingOption(
+        name: "Adam",
+        image: kUser4,
+        percentage: 12.obs,
+        isSelected: false.obs,
+      ),
+    ]);
   }
 
   void initializeVideo() {
@@ -78,6 +104,38 @@ class ViewVideoController extends GetxController {
 
     videoController.addListener(() {
       currentPosition.value = videoController.value.position;
+
+      if (currentPosition.value >= const Duration(seconds: 5) &&
+          !isEnabled.value) {
+        _startPuzzleLogic();
+      }
+
+      if (currentPosition.value >= const Duration(seconds: 35)) {
+        if (showPuzzleStart.value) {
+          showPuzzleStart.value = false;
+        } else if (isPuzzleActive.value) {
+          showFailure.value = true;
+        }
+      }
+
+      if (currentPosition.value >= const Duration(seconds: 40)) {
+        showProgress.value = false;
+        showVoting.value = true;
+        _startVotingTimer();
+      }
+
+      if (currentPosition.value >= const Duration(seconds: 60) &&
+          !showResults.value) {
+        showResults.value = true;
+        // Future.delayed(const Duration(seconds: 2), () {
+        //   showResults.value = false;
+        // });
+      }
+
+      // if (currentPosition.value >= const Duration(seconds: 102) &&
+      //     showThirdPuzzle.value) {
+      //   _startThirdPuzzleLogic();
+      // }
 
       if (videoController.value.position >= videoController.value.duration) {
         isPlaying.value = false;
@@ -106,7 +164,7 @@ class ViewVideoController extends GetxController {
 
   void startTimer() {
     timerRunning.value = true;
-    timeLeft.value = 600;
+    timeLeft.value = 240;
     Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!timerRunning.value) {
         timer.cancel();
@@ -117,6 +175,18 @@ class ViewVideoController extends GetxController {
           checkPuzzleCompletion();
         }
       }
+    });
+  }
+
+  void _startPuzzleLogic() {
+    Future.delayed(const Duration(seconds: 0), () {
+      Timer(const Duration(seconds: 1), () {
+        isEnabled.value = true;
+        Timer(const Duration(seconds: 1), () {
+          isChallengeActive.value = true;
+          showPuzzleStart.value = true;
+        });
+      });
     });
   }
 
@@ -196,6 +266,40 @@ class ViewVideoController extends GetxController {
   void toggleVideoSize() {
     isSmallVideo.value = true;
     Get.back();
+  }
+
+  void _startVotingTimer() {
+    timerRunning.value = true;
+    votingTimer.value = 106;
+
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (votingTimer.value > 0) {
+        votingTimer.value--;
+      } else {
+        timer.cancel();
+        timerRunning.value = false;
+        showVoting.value = false;
+        showResults.value = true;
+        // Future.delayed(const Duration(seconds: 2), () {
+        //   showResults.value = false;
+        //   showThirdPuzzle.value = true;
+        // });
+      }
+    });
+  }
+
+  void voteForOption(VotingOption option) {
+    for (var opt in votingOptions) {
+      opt.isSelected.value = false;
+    }
+
+    option.isSelected.value = true;
+
+    totalVotes.value++;
+  }
+
+  void _startThirdPuzzleLogic() {
+    isPuzzleActive.value = true;
   }
 
   @override

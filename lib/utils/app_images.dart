@@ -35,3 +35,7 @@ String kThumbImage8 = "$basePath/img8.png";
 String kThumbImage9 = "$basePath/img9.png";
 String kThumbImage10 = "$basePath/img10.png";
 String kAvatar = "$basePath/avatar.png";
+String kUser1 = "$basePath/user1.png";
+String kUser2 = "$basePath/user2.png";
+String kUser3 = "$basePath/user3.png";
+String kUser4 = "$basePath/user4.png";
