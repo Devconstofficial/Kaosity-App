@@ -57,7 +57,14 @@ class PuzzleSection extends StatelessWidget {
                   borderRadius: 4,
                   title: 'Start Puzzle',
                   onTap: () {
-                    controller.togglePuzzle();
+                    if (controller.showMemoryPuzzleStart.value) {
+                      controller.showMemoryPuzzleStart.value = false;
+                      controller.showThirdPuzzle.value = true;
+
+                      controller.startMemoryPuzzle();
+                    } else {
+                      controller.togglePuzzle();
+                    }
                   },
                   textSize: 17,
                 ),

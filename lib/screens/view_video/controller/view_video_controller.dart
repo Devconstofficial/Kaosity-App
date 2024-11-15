@@ -1,4 +1,4 @@
-import 'dart:async'; // Import this package for Timer
+import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -37,6 +37,29 @@ class ViewVideoController extends GetxController {
   var votingOptions = <VotingOption>[].obs;
   var totalVotes = 0.obs;
   var showThirdPuzzle = false.obs;
+  var showMemoryPuzzleStart = false.obs;
+  var memorySequence = <int>[].obs;
+  var userSequence = <int>[].obs;
+  var roundNumber = 1.obs;
+  var totalRounds = 3;
+  var currentRoundSequenceIndex = 0.obs;
+  var isUserTurn = false.obs;
+  var highlightedTile = (-1).obs;
+  var tileColors = [
+    [kBlueShade6Color, kBlueShade7Color],
+    [kYellowShadeColor, kYellowShade1Color],
+    [kGreenShade6Color, kGreenShade7Color],
+    [kPurpleShade1Color, kPurpleShade2Color]
+  ];
+  var puzzleTimer = 124.obs;
+  var puzzleTimerRunning = false.obs;
+  var showPuzzleSuccess = false.obs;
+  var showPuzzleFailure = false.obs;
+  var userFailed = false.obs;
+  var showMemoryProgress = false.obs;
+  var fistPuzzleTrigger = false.obs;
+  var secondPuzzleTrigger = false.obs;
+  var thirdPuzzleTrigger = false.obs;
 
   // Comments
   var comments = <Comment>[].obs;
@@ -110,7 +133,9 @@ class ViewVideoController extends GetxController {
         _startPuzzleLogic();
       }
 
-      if (currentPosition.value >= const Duration(seconds: 35)) {
+      if (currentPosition.value >= const Duration(seconds: 35) &&
+          !fistPuzzleTrigger.value) {
+        fistPuzzleTrigger.value = true;
         if (showPuzzleStart.value) {
           showPuzzleStart.value = false;
         } else if (isPuzzleActive.value) {
@@ -118,24 +143,26 @@ class ViewVideoController extends GetxController {
         }
       }
 
-      if (currentPosition.value >= const Duration(seconds: 40)) {
+      if (currentPosition.value >= const Duration(seconds: 40) &&
+          !secondPuzzleTrigger.value) {
+        secondPuzzleTrigger.value = true;
         showProgress.value = false;
         showVoting.value = true;
         _startVotingTimer();
       }
 
       if (currentPosition.value >= const Duration(seconds: 60) &&
-          !showResults.value) {
+          !showResults.value &&
+          !thirdPuzzleTrigger.value) {
+        thirdPuzzleTrigger.value = true;
+        showVoting.value = false;
         showResults.value = true;
-        // Future.delayed(const Duration(seconds: 2), () {
-        //   showResults.value = false;
-        // });
+        Future.delayed(const Duration(seconds: 2), () {
+          showResults.value = false;
+          thirdPuzzleTrigger.value = true;
+          showMemoryPuzzleStart.value = true;
+        });
       }
-
-      // if (currentPosition.value >= const Duration(seconds: 102) &&
-      //     showThirdPuzzle.value) {
-      //   _startThirdPuzzleLogic();
-      // }
 
       if (videoController.value.position >= videoController.value.duration) {
         isPlaying.value = false;
@@ -213,15 +240,15 @@ class ViewVideoController extends GetxController {
 
   void checkPuzzleCompletion() {
     final correctAnswers = {
-      '0-0': 'P', '0-1': 'H', '0-2': 'O', '0-3': 'N',
-      '0-4': 'E', // PHONE (1 Down)
-      '1-4': 'L', '2-4': 'E', '3-4': 'V', '4-4': 'E',
-      '5-4': 'N', // ELEVEN (2 Down)
-      '2-1': 'T', '2-2': 'A', '2-3': 'P', // TAPE (3 Down)
-      '3-2': 'W', '3-3': 'A', '3-5': 'E', // WAVE (4 Across)
-      '4-0': 'M', '4-1': 'O', '4-2': 'V', '4-3': 'I',
-      '4-5': 'S', // MOVIES (5 Across)
-      '5-2': 'P', '5-3': 'E' // PEN (6 Across)
+      '0-1': 'J', '1-1': 'L', // JLO (1 Down)
+      '0-3': 'T', '1-3': 'H', '2-3': 'I', '3-3': 'R', '4-3': 'T',
+      '5-3': 'Y', '6-3': 'S', '7-3': 'I', '8-3': 'X', // THIRTYSIX (2 Down)
+      '3-5': 'J', '4-5': 'A', '5-5': 'W', '6-5': 'S', // JAWS (3 Down)
+      '2-0': 'M', '2-1': 'O', '2-2': 'N', '2-4': 'C',
+      '2-5': 'A', // MONICA (4 Across)
+      '4-0': 'T', '4-1': 'A', '4-2': 'F', '4-4': 'T', // TAFT (5 Across)
+      '7-2': 'M', '7-4': 'I', '7-5': 'C', '7-6': 'H', '7-7': 'E',
+      '7-8': 'L', // MICHELE (6 Across)
     };
 
     bool allCorrect = correctAnswers.entries.every((entry) {
@@ -233,8 +260,7 @@ class ViewVideoController extends GetxController {
       timerRunning.value = false;
       showSuccess.value = true;
     } else if (timeLeft.value == 0) {
-      showFailure.value = !allCorrect;
-      showSuccess.value = allCorrect;
+      showFailure.value = true;
     }
   }
 
@@ -280,10 +306,10 @@ class ViewVideoController extends GetxController {
         timerRunning.value = false;
         showVoting.value = false;
         showResults.value = true;
-        // Future.delayed(const Duration(seconds: 2), () {
-        //   showResults.value = false;
-        //   showThirdPuzzle.value = true;
-        // });
+        Future.delayed(const Duration(seconds: 2), () {
+          showResults.value = false;
+          showMemoryPuzzleStart.value = true;
+        });
       }
     });
   }
@@ -298,8 +324,137 @@ class ViewVideoController extends GetxController {
     totalVotes.value++;
   }
 
-  void _startThirdPuzzleLogic() {
-    isPuzzleActive.value = true;
+  void startMemoryPuzzle() async {
+    resetPuzzleState();
+    _startPuzzleTimer();
+
+    isUserTurn.value = false;
+    highlightedTile.value = -1;
+
+    for (int i = 0; i < 4; i++) {
+      userSequence.add(i);
+    }
+
+    await Future.delayed(const Duration(seconds: 3), () {
+      userSequence.clear();
+      highlightedTile.value = -1;
+    });
+
+    Future.delayed(const Duration(milliseconds: 500), _startRound);
+  }
+
+  void _startPuzzleTimer() {
+    puzzleTimerRunning.value = true;
+    puzzleTimer.value = 124;
+
+    Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (puzzleTimer.value <= 0 || !puzzleTimerRunning.value) {
+        timer.cancel();
+        _endPuzzle(success: false);
+      } else {
+        puzzleTimer.value--;
+      }
+    });
+  }
+
+  final List<List<int>> predefinedSequences = [
+    [2, 3, 1, 0], // Sequence for round 1
+    [1, 0, 3, 2], // Sequence for round 2
+    [0, 1, 3, 2], // Sequence for round 3
+  ];
+
+  void _startRound() {
+    memorySequence.clear();
+    userSequence.clear();
+    currentRoundSequenceIndex.value = 0;
+    isUserTurn.value = false;
+
+    for (int i = 0; i < 4; i++) {
+      memorySequence.add(predefinedSequences[roundNumber.value - 1][i]);
+    }
+
+    _showSequence();
+  }
+
+  void _showSequence() async {
+    isUserTurn.value = false;
+    highlightedTile.value = -1;
+
+    for (int i = 0; i < memorySequence.length; i++) {
+      highlightedTile.value = memorySequence[i];
+      await Future.delayed(const Duration(seconds: 1));
+      highlightedTile.value = -1;
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    isUserTurn.value = true;
+  }
+
+  void submitTile(int tileIndex) {
+    if (!isUserTurn.value) return;
+
+    if (!userSequence.contains(tileIndex)) {
+      userSequence.add(tileIndex);
+    }
+
+    highlightedTile.value = tileIndex;
+
+    if (userSequence.length == memorySequence.length) {
+      isUserTurn.value = false;
+      Future.delayed(const Duration(milliseconds: 500), _checkUserSequence);
+    }
+  }
+
+  void _checkUserSequence() {
+    bool isCorrect = true;
+
+    for (int i = 0; i < memorySequence.length; i++) {
+      if (memorySequence[i] != userSequence[i]) {
+        isCorrect = false;
+        break;
+      }
+    }
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      userFailed.value = !isCorrect;
+
+      if (isCorrect) {
+        _onRoundSuccess();
+      } else {
+        _onRoundFailure();
+      }
+    });
+  }
+
+  void _onRoundSuccess() {
+    if (roundNumber.value >= totalRounds) {
+      _endPuzzle(success: true);
+    } else {
+      roundNumber.value++;
+      Future.delayed(const Duration(seconds: 2), _startRound);
+    }
+  }
+
+  void _onRoundFailure() {
+    Future.delayed(const Duration(seconds: 2), _startRound);
+  }
+
+  void _endPuzzle({required bool success}) {
+    isUserTurn.value = false;
+    puzzleTimerRunning.value = false;
+    showThirdPuzzle.value = false;
+    showPuzzleSuccess.value = success;
+    showPuzzleFailure.value = !success;
+    showMemoryProgress.value = true;
+
+    Future.delayed(const Duration(seconds: 2), resetPuzzleState);
+  }
+
+  void resetPuzzleState() {
+    roundNumber.value = 1;
+    memorySequence.clear();
+    userSequence.clear();
+    highlightedTile.value = -1;
   }
 
   @override

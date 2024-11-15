@@ -5,6 +5,7 @@ import 'package:kaosity_app/screens/view_video/audience_progress.dart';
 import 'package:kaosity_app/screens/view_video/challenge_section.dart';
 import 'package:kaosity_app/screens/view_video/comment_list.dart';
 import 'package:kaosity_app/screens/view_video/controller/view_video_controller.dart';
+import 'package:kaosity_app/screens/view_video/memory_puzzle_widget.dart';
 import 'package:kaosity_app/screens/view_video/puzzle_board.dart';
 import 'package:kaosity_app/screens/view_video/puzzle_section.dart';
 import 'package:kaosity_app/screens/view_video/video_player_widget.dart';
@@ -61,6 +62,13 @@ class ViewVideoScreen extends StatelessWidget {
                                   return const SizedBox.shrink();
                                 }
                               }),
+                              Obx(() {
+                                if (controller.showThirdPuzzle.value) {
+                                  return MemoryPuzzleWidget();
+                                } else {
+                                  return const SizedBox.shrink();
+                                }
+                              }),
                             ],
                           ),
                           Positioned(
@@ -99,9 +107,13 @@ class ViewVideoScreen extends StatelessWidget {
                         children: [
                           VideoPlayerWidget(),
                           Obx(
-                            () => controller.showPuzzleStart.value
+                            () => (controller.showPuzzleStart.value ||
+                                    controller.showMemoryPuzzleStart.value)
                                 ? PuzzleSection()
-                                : ChallengeSection(),
+                                : controller.showThirdPuzzle.value ||
+                                        controller.showMemoryProgress.value
+                                    ? const SizedBox.shrink()
+                                    : ChallengeSection(),
                           ),
                           Obx(() => controller.isPuzzleActive.value
                               ? Expanded(
@@ -110,6 +122,9 @@ class ViewVideoScreen extends StatelessWidget {
                               : const SizedBox.shrink()),
                           Obx(() => controller.showProgress.value
                               ? const AudienceProgress()
+                              : const SizedBox.shrink()),
+                          Obx(() => controller.showMemoryProgress.value
+                              ? const MemoryAudienceProgress()
                               : const SizedBox.shrink()),
                           Obx(() {
                             if (controller.showResults.value) {
@@ -120,10 +135,21 @@ class ViewVideoScreen extends StatelessWidget {
                               return const SizedBox.shrink();
                             }
                           }),
-                          SizedBox(height: getHeight(23)),
+                          Obx(() {
+                            if (controller.showThirdPuzzle.value) {
+                              return MemoryPuzzleWidget();
+                            } else {
+                              return const SizedBox.shrink();
+                            }
+                          }),
+                          controller.showThirdPuzzle.value
+                              ? SizedBox(
+                                  height: getHeight(50),
+                                )
+                              : SizedBox(height: getHeight(23)),
                           Obx(() => controller.isPuzzleActive.value
                               ? SizedBox(
-                                  height: getHeight(180),
+                                  height: getHeight(120),
                                   child: CommentList(),
                                 )
                               : Expanded(child: CommentList())),
