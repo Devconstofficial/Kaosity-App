@@ -19,7 +19,8 @@ class ChallengeSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (!controller.isEnabled.value) ...[
+            if (!controller.isEnabled.value ||
+                !controller.showThirdPuzzle.value) ...[
               SizedBox(height: getHeight(12)),
               Text("Escape Room",
                   style: AppStyles.whiteTextStyle()
@@ -32,93 +33,103 @@ class ChallengeSection extends StatelessWidget {
                   style: AppStyles.whiteTextStyle()
                       .copyWith(fontSize: 14.sp, color: kGreyShade2Color)),
             ],
-            SizedBox(height: getHeight(15)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("Challenges",
-                    style:
-                        AppStyles.whiteTextStyle().copyWith(fontSize: 16.sp)),
-                if (controller.isChallengeActive.value)
-                  GestureDetector(
-                    onTap: () {
-                      controller.isExpanded.value =
-                          !controller.isExpanded.value;
-                    },
-                    child: Image.asset(
-                      kArrowsIcon,
-                      height: getHeight(18),
-                      width: getWidth(18),
-                    ),
+            !controller.showThirdPuzzle.value
+                ? SizedBox(height: getHeight(15))
+                : const SizedBox.shrink(),
+            !controller.showThirdPuzzle.value
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text("Challenges",
+                          style: AppStyles.whiteTextStyle()
+                              .copyWith(fontSize: 16.sp)),
+                      if (controller.isChallengeActive.value)
+                        GestureDetector(
+                          onTap: () {
+                            controller.isExpanded.value =
+                                !controller.isExpanded.value;
+                          },
+                          child: Image.asset(
+                            kArrowsIcon,
+                            height: getHeight(18),
+                            width: getWidth(18),
+                          ),
+                        )
+                    ],
                   )
-              ],
-            ),
-            SizedBox(height: getHeight(6)),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {
-                    // if (controller.isChallengeActive.value) {
-                    //   controller.showPuzzleStart.value = true;
-                    // }
-                  },
-                  child: Container(
-                    height: getHeight(28),
-                    width: getWidth(64),
-                    decoration: BoxDecoration(
-                        color: controller.isChallengeActive.value
-                            ? kPrimaryColor
-                            : (controller.isEnabled.value
-                                ? kBlackShade3Color
-                                : kBlackShade2Color),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Center(
-                      child: Image.asset(
-                        kPuzzleIcon,
-                        height: getHeight(18),
-                        width: getWidth(18),
-                        color: controller.isEnabled.value ? Colors.white : null,
+                : const SizedBox.shrink(),
+            !controller.showThirdPuzzle.value
+                ? SizedBox(height: getHeight(6))
+                : const SizedBox.shrink(),
+            !controller.showThirdPuzzle.value
+                ? Row(
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          // if (controller.isChallengeActive.value) {
+                          //   controller.showPuzzleStart.value = true;
+                          // }
+                        },
+                        child: Container(
+                          height: getHeight(28),
+                          width: getWidth(64),
+                          decoration: BoxDecoration(
+                              color: controller.isChallengeActive.value
+                                  ? kPrimaryColor
+                                  : (controller.isEnabled.value
+                                      ? kBlackShade3Color
+                                      : kBlackShade2Color),
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Center(
+                            child: Image.asset(
+                              kPuzzleIcon,
+                              height: getHeight(18),
+                              width: getWidth(18),
+                              color: controller.isEnabled.value
+                                  ? Colors.white
+                                  : null,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: getWidth(12)),
-                Container(
-                  height: getHeight(28),
-                  width: getWidth(64),
-                  decoration: BoxDecoration(
-                      color: kBlackShade2Color,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Center(
-                    child: Image.asset(
-                      controller.isChallengeActive.value
-                          ? kWorldIcon
-                          : kVoteIcon,
-                      height: getHeight(18),
-                      width: getWidth(31),
-                    ),
-                  ),
-                ),
-                SizedBox(width: getWidth(12)),
-                Container(
-                  height: getHeight(28),
-                  width: getWidth(64),
-                  decoration: BoxDecoration(
-                      color: kBlackShade2Color,
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Center(
-                    child: Image.asset(
-                      kPaintIcon,
-                      height: getHeight(18),
-                      width: getWidth(18),
-                      color: controller.isChallengeActive.value
-                          ? kWhiteColor
-                          : null,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                      SizedBox(width: getWidth(12)),
+                      Container(
+                        height: getHeight(28),
+                        width: getWidth(64),
+                        decoration: BoxDecoration(
+                            color: kBlackShade2Color,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Center(
+                          child: Image.asset(
+                            controller.isChallengeActive.value
+                                ? kWorldIcon
+                                : kVoteIcon,
+                            height: getHeight(18),
+                            width: getWidth(31),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: getWidth(12)),
+                      Container(
+                        height: getHeight(28),
+                        width: getWidth(64),
+                        decoration: BoxDecoration(
+                            color: kBlackShade2Color,
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Center(
+                          child: Image.asset(
+                            kPaintIcon,
+                            height: getHeight(18),
+                            width: getWidth(18),
+                            color: controller.isChallengeActive.value
+                                ? kWhiteColor
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
           ],
         ),
       );

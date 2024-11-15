@@ -53,7 +53,7 @@ class PuzzleBoard extends StatelessWidget {
               Obx(() => Container(
                     width: getWidth(402),
                     padding: EdgeInsets.symmetric(
-                        horizontal: getWidth(21), vertical: getHeight(9)),
+                        horizontal: getWidth(19), vertical: getHeight(9)),
                     decoration: BoxDecoration(
                       color: controller.timeLeft.value <= 10
                           ? kRedShade2Color
@@ -104,12 +104,15 @@ class PuzzleBoard extends StatelessWidget {
 
   Widget buildPuzzleGrid() {
     List<List<int?>> puzzleLayout = [
-      [1, 0, 0, 0, 2, null, null],
-      [null, null, null, null, 0, null, null],
-      [null, 3, 0, 0, 0, null, null],
-      [null, null, 4, 0, 0, 0, null],
-      [5, 0, 0, 0, 0, 0, null],
-      [null, null, 6, 0, 0, null, null],
+      [null, 1, null, 2, null, null, null, null, null],
+      [null, 0, null, 0, null, 3, null, null, null],
+      [4, 0, 0, 0, 0, 0, null, null, null],
+      [null, null, null, 0, null, 0, null, null, null],
+      [5, 0, 0, 0, null, 0, null, null, null],
+      [null, null, null, 0, null, null, null, null, null],
+      [null, null, null, 0, null, null, null, null, null],
+      [null, null, 6, 0, 0, 0, 0, 0, 0],
+      [null, null, null, 0, null, null, null, null, null],
     ];
 
     return Column(
@@ -119,7 +122,7 @@ class PuzzleBoard extends StatelessWidget {
           children: List.generate(puzzleLayout[row].length, (col) {
             final String key = "$row-$col";
             if (puzzleLayout[row][col] == null) {
-              return emptyCell();
+              return Flexible(child: emptyCell());
             } else {
               if (!controller.textControllers.containsKey(key)) {
                 controller.textControllers[key] = TextEditingController();
@@ -143,17 +146,16 @@ class PuzzleBoard extends StatelessWidget {
       bool isFilled = controller.userAnswers.containsKey("$row-$col");
       return Container(
         width: getWidth(40),
-        height: getHeight(37.26),
-        margin: const EdgeInsets.all(0.1),
+        height: getHeight(37),
+        margin: const EdgeInsets.all(0),
         decoration: BoxDecoration(
             color: kGreyShade6Color,
             border: Border.all(
                 color: (!isFilled && controller.timeLeft.value <= 10)
                     ? kRedShade1Color
                     : kBgColor,
-                width: (!isFilled && controller.timeLeft.value <= 10)
-                    ? 1.5
-                    : 0.66),
+                width:
+                    (!isFilled && controller.timeLeft.value <= 10) ? 1 : 0.66),
             borderRadius: BorderRadius.circular(3)),
         child: Stack(
           children: [
@@ -205,9 +207,11 @@ class PuzzleBoard extends StatelessWidget {
   Widget emptyCell() {
     return Container(
       width: getWidth(40),
-      height: getHeight(37.26),
-      margin: const EdgeInsets.all(0.1),
-      color: Colors.transparent,
+      height: getHeight(37),
+      margin: const EdgeInsets.all(0),
+      decoration: BoxDecoration(
+          border: Border.all(color: Colors.transparent, width: 0.66),
+          borderRadius: BorderRadius.circular(3)),
     );
   }
 

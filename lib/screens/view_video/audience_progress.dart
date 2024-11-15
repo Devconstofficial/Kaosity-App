@@ -149,3 +149,57 @@ class FilledContainer extends StatelessWidget {
     );
   }
 }
+
+class MemoryAudienceProgress extends StatelessWidget {
+  const MemoryAudienceProgress({
+    super.key,
+  });
+
+  @override
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: getHeight(191),
+      width: double.infinity,
+      decoration: BoxDecoration(color: kBlackShade1Color.withOpacity(0.97)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(height: getHeight(8)),
+          Text("Success",
+              style: AppStyles.whiteTextStyle()
+                  .copyWith(fontSize: 18.sp, fontWeight: FontWeight.w600)),
+          SizedBox(height: getHeight(10)),
+          Center(child: FilledContainer(totalValue: 1000, filledValue: 1000)),
+          SizedBox(height: getHeight(7)),
+          Text("Points Earned",
+              style: AppStyles.whiteTextStyle().copyWith(
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w500,
+                  color: kGreenShade2Color)),
+          SizedBox(height: getHeight(10)),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: getWidth(83)),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Time Remaining",
+                    style: AppStyles.whiteTextStyle().copyWith(
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w400,
+                        color: kWhiteColor.withOpacity(0.5))),
+                Text(
+                  "0:00",
+                  style: AppStyles.whiteTextStyle().copyWith(
+                      fontSize: 15.sp,
+                      fontWeight: FontWeight.w600,
+                      color: kWhiteColor.withOpacity(0.5)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
