@@ -6,7 +6,6 @@ void showCustomSnackbar(String title, String message,
   Get.snackbar(
     title,
     message,
-    snackPosition: SnackPosition.BOTTOM,
     backgroundColor: backgroundColor,
     colorText: Colors.white,
     borderRadius: 8,

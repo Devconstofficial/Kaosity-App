@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kaosity_app/utils/app_strings.dart';
 import 'package:kaosity_app/utils/app_theme.dart';
 import 'package:kaosity_app/utils/route_generator.dart';
@@ -10,12 +13,22 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(const MyApp());
+  final box = GetStorage();
+  String initialRoute = kDisclaimerScreenRoute;
+  final authToken = box.read<String?>('authToken');
+
+  if (authToken != null) {
+    initialRoute = kSplashScreenRoute;
+    log(authToken);
+  }
+  runApp(MyApp(initialRoute: initialRoute));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String initialRoute;
+  const MyApp({super.key, required this.initialRoute});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +43,7 @@ class MyApp extends StatelessWidget {
               title: 'Kaosity App',
               debugShowCheckedModeBanner: false,
               initialBinding: ScreenBindings(),
-              initialRoute: kDisclaimerScreenRoute,
+              initialRoute: initialRoute,
               getPages: RouteGenerator.getPages(),
               builder: (context, child) {
                 return MediaQuery(

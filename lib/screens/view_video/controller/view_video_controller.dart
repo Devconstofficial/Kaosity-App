@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kaosity_app/models/comment_model.dart';
 import 'package:kaosity_app/models/voting_model.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
 import 'package:kaosity_app/utils/app_images.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../../services/websocket_services.dart';
 
 class ViewVideoController extends GetxController {
   // Video Controller
@@ -64,31 +67,22 @@ class ViewVideoController extends GetxController {
   // Comments
   var comments = <Comment>[].obs;
   final TextEditingController commentController = TextEditingController();
+  final List<Color> nameColors = [kGreenShadeColor, kBlueShadeColor, kRedShadeColor];
+  final List<String> icons = [kStatus1Icon, kStatus2Icon, kStatusIcon];
+  int _currentColorIndex = 0;
+  int _currentIconIndex = 0;
 
   var currentPosition = Duration.zero.obs;
 
   @override
-  void onInit() {
+  void onInit() async{
     super.onInit();
+    
     initializeVideo();
+    
+    // _listenForMessages();
 
-    comments.addAll([
-      Comment(
-          username: "Alice",
-          message: "Great video!",
-          icon: kStatusIcon,
-          nameColor: kGreenShadeColor),
-      Comment(
-          username: "Bob",
-          message: "Interesting topic!",
-          icon: kStatus1Icon,
-          nameColor: kBlueShadeColor),
-      Comment(
-          username: "Charlie",
-          message: "Loved it! Keep it up!",
-          icon: kStatus2Icon,
-          nameColor: kRedShadeColor),
-    ]);
+    
 
     votingOptions.addAll([
       VotingOption(
@@ -117,61 +111,88 @@ class ViewVideoController extends GetxController {
       ),
     ]);
   }
-
-  void initializeVideo() {
-    videoController = VideoPlayerController.asset(
-      'assets/video.mp4',
-    )..initialize().then((_) {
-        update();
-      });
-
-    videoController.addListener(() {
-      currentPosition.value = videoController.value.position;
-
-      if (currentPosition.value >= const Duration(seconds: 5) &&
-          !isEnabled.value) {
-        _startPuzzleLogic();
+  void _listenForMessages() {
+    WebSocketService().socket?.on('messageRecieved', (data) {
+      if (data != null && data is Map<String, dynamic>) {
+        addReceivedMessage(data);
       }
-
-      if (currentPosition.value >= const Duration(seconds: 35) &&
-          !fistPuzzleTrigger.value) {
-        fistPuzzleTrigger.value = true;
-        if (showPuzzleStart.value) {
-          showPuzzleStart.value = false;
-        } else if (isPuzzleActive.value) {
-          showFailure.value = true;
-        }
-      }
-
-      if (currentPosition.value >= const Duration(seconds: 40) &&
-          !secondPuzzleTrigger.value) {
-        secondPuzzleTrigger.value = true;
-        showProgress.value = false;
-        showVoting.value = true;
-        _startVotingTimer();
-      }
-
-      if (currentPosition.value >= const Duration(seconds: 60) &&
-          !showResults.value &&
-          !thirdPuzzleTrigger.value) {
-        thirdPuzzleTrigger.value = true;
-        showVoting.value = false;
-        showResults.value = true;
-        Future.delayed(const Duration(seconds: 2), () {
-          showResults.value = false;
-          thirdPuzzleTrigger.value = true;
-          showMemoryPuzzleStart.value = true;
-        });
-      }
-
-      if (videoController.value.position >= videoController.value.duration) {
-        isPlaying.value = false;
-        videoController.seekTo(Duration.zero);
-      }
-
-      update();
     });
   }
+
+  void addReceivedMessage(Map<String, dynamic> data) {
+    final comment = Comment(
+      username: data['name'],
+      message: data['text'],
+      icon: icons[_currentIconIndex],
+      nameColor: nameColors[_currentColorIndex],
+    );
+
+    comments.add(comment);
+    _currentColorIndex = (_currentColorIndex + 1) % nameColors.length;
+    _currentIconIndex = (_currentIconIndex + 1) % icons.length;
+  }
+
+  void initializeVideo() {
+  videoController = VideoPlayerController.networkUrl(
+    Uri.parse('https://jnllsh7h-8000.inc1.devtunnels.ms/user/videos/videoplayback/output.m3u8'),
+  )..initialize().then((_) {
+      update();
+    });
+
+  videoController.addListener(() {
+    currentPosition.value = videoController.value.position;
+
+    // Crossword Puzzle Logic
+    if (currentPosition.value >= const Duration(seconds: 33) &&
+        currentPosition.value < const Duration(seconds: 250) &&
+        !isEnabled.value) {
+      _startPuzzleLogic();
+    }
+
+    if (currentPosition.value >= const Duration(seconds: 250) &&
+        currentPosition.value < const Duration(seconds: 267) &&
+        !fistPuzzleTrigger.value) {
+      fistPuzzleTrigger.value = true;
+      if (showPuzzleStart.value) {
+        showPuzzleStart.value = false;
+      } else if (isPuzzleActive.value) {
+        showFailure.value = true;
+      }
+    }
+
+    // Puzzle 2 - Choose A Person
+    if (currentPosition.value >= const Duration(seconds: 284) &&
+        currentPosition.value <= const Duration(seconds: 390) &&
+        !secondPuzzleTrigger.value) {
+      secondPuzzleTrigger.value = true;
+      showProgress.value = false;
+      showVoting.value = true;
+      _startVotingTimer();
+    }
+
+    // Puzzle 3 - Memory Game
+    if (currentPosition.value >= const Duration(seconds: 814) &&
+        currentPosition.value < const Duration(seconds: 874) &&
+        !thirdPuzzleTrigger.value) {
+      thirdPuzzleTrigger.value = true;
+      showMemoryPuzzleStart.value = true;
+    }
+
+    if (currentPosition.value >= const Duration(seconds: 874) &&
+        currentPosition.value <= const Duration(seconds: 938) &&
+        !thirdPuzzleTrigger.value) {
+      thirdPuzzleTrigger.value = true;
+      showMemoryPuzzleStart.value = true;
+    }
+
+    if (videoController.value.position >= videoController.value.duration) {
+      isPlaying.value = false;
+      videoController.seekTo(Duration.zero);
+    }
+
+    update();
+  });
+}
 
   void togglePlayPause() {
     if (videoController.value.isPlaying) {

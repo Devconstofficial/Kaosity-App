@@ -36,13 +36,34 @@ class LoginScreen extends StatelessWidget {
               SizedBox(height: getHeight(30)),
               CustomTextField(
                 controller: authController.usernameController,
-                hintText: 'Username',
+                hintText: 'Email Address',
               ),
               SizedBox(height: getHeight(19)),
-              CustomTextField(
-                controller: authController.passwordController,
-                hintText: 'Password',
-                isObscure: true,
+              Obx(
+                ()=> CustomTextField(
+                  controller: authController.passwordController,
+                  hintText: 'Password',
+                  isObscure:authController.isPasswordShow2.isTrue? false: true,
+                  suffix: authController.isPasswordShow2.isTrue
+                      ? GestureDetector(
+                          onTap: () {
+                            authController.isPasswordShow2.value =
+                                !authController.isPasswordShow2.value;
+                          },
+                          child: Icon(
+                            Icons.visibility,
+                            color: kWhiteColor,
+                          ))
+                      : GestureDetector(
+                          onTap: () {
+                            authController.isPasswordShow2.value =
+                                !authController.isPasswordShow2.value;
+                          },
+                          child: Icon(
+                            Icons.visibility_off,
+                            color: kWhiteColor,
+                          )),
+                ),
               ),
               SizedBox(height: getHeight(4)),
               Align(

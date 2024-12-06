@@ -27,6 +27,10 @@ class ContentItem {
 }
 
 class FeaturedContent {
+  final String? id;
+  final String? path;
+  final String? thumbnail;
+  final List<dynamic>? participants;
   final String title;
   final String subtitle;
   final String imageUrl;
@@ -34,6 +38,10 @@ class FeaturedContent {
   final List<Tag> tags;
 
   FeaturedContent({
+    this.id,
+    this.path,
+    this.thumbnail,
+    this.participants,
     required this.title,
     required this.subtitle,
     required this.imageUrl,

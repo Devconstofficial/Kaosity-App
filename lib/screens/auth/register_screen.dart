@@ -44,10 +44,31 @@ class RegisterScreen extends StatelessWidget {
                 hintText: 'Email',
               ),
               SizedBox(height: getHeight(19)),
-              CustomTextField(
-                controller: authController.passwordRegController,
-                hintText: 'Password',
-                isObscure: true,
+              Obx(
+                ()=> CustomTextField(
+                  controller: authController.passwordRegController,
+                  hintText: 'Password',
+                  isObscure:authController.isPasswordShow.isTrue? false: true,
+                  suffix: authController.isPasswordShow.isTrue
+                      ? GestureDetector(
+                          onTap: () {
+                            authController.isPasswordShow.value =
+                                !authController.isPasswordShow.value;
+                          },
+                          child: Icon(
+                            Icons.visibility,
+                            color: kWhiteColor,
+                          ))
+                      : GestureDetector(
+                          onTap: () {
+                            authController.isPasswordShow.value =
+                                !authController.isPasswordShow.value;
+                          },
+                          child: Icon(
+                            Icons.visibility_off,
+                            color: kWhiteColor,
+                          )),
+                ),
               ),
               SizedBox(height: getHeight(40)),
               CustomButton(

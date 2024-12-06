@@ -14,19 +14,24 @@ import 'package:kaosity_app/utils/app_colors.dart';
 import 'package:kaosity_app/utils/app_styles.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../services/websocket_services.dart';
+
 class ViewVideoScreen extends StatelessWidget {
   final ViewVideoController controller = Get.find();
 
   ViewVideoScreen({super.key});
 
   Future<bool> _onWillPop() async {
-    if (controller.isFullScreen.value) {
-      controller.toggleFullScreen();
-      SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-      return false;
-    }
-    return true;
+  if (controller.isFullScreen.value) {
+    controller.toggleFullScreen();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    return false;
   }
+  WebSocketService().leaveLiveChat();
+  // WebSocketService().disconnect();
+  return true;
+}
+
 
   @override
   Widget build(BuildContext context) {

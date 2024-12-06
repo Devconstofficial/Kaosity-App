@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:kaosity_app/models/content_section_model.dart';
 import 'package:kaosity_app/screens/home/controller/home_controller.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
@@ -8,6 +9,8 @@ import 'package:kaosity_app/utils/app_strings.dart';
 import 'package:kaosity_app/utils/app_styles.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../services/websocket_services.dart';
 
 class HomeScreen extends StatelessWidget {
   final HomeController homeController = Get.find();
@@ -84,13 +87,13 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: getHeight(30)),
                 buildFeaturedContent(homeController.featuredContent.value),
                 SizedBox(height: getHeight(31)),
-                ...homeController.searchQuery.value.isEmpty
-                    ? homeController.sections
-                        .map((section) => buildSection(section))
-                        .toList()
-                    : homeController.searchedSections
-                        .map((section) => buildSection(section))
-                        .toList(),
+                // ...homeController.searchQuery.value.isEmpty
+                //     ? homeController.sections
+                //         .map((section) => buildSection(section))
+                //         .toList()
+                //     : homeController.searchedSections
+                //         .map((section) => buildSection(section))
+                //         .toList(),
               ],
             );
           }),
@@ -130,10 +133,17 @@ class HomeScreen extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: getHeight(18)),
-                      Text(
-                        'Setting',
-                        style: AppStyles.whiteTextStyle()
-                            .copyWith(fontSize: 16.sp),
+                      GestureDetector(
+                        onTap: () async {
+                          await GetStorage().erase();
+                          WebSocketService().disconnect();
+                          Get.offAllNamed(kLoginScreenRoute);
+                        },
+                        child: Text(
+                          'Logout',
+                          style: AppStyles.whiteTextStyle()
+                              .copyWith(fontSize: 16.sp),
+                        ),
                       ),
                     ],
                   ),
@@ -204,11 +214,14 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget buildFeaturedContent(FeaturedContent content) {
+    final webSocketService = WebSocketService();
     return InkWell(
-      onTap: () {
+      onTap: () async {
         if (homeController.controller.isSmallVideo.value) {
           homeController.controller.isSmallVideo.value = false;
         }
+        // await webSocketService.connect();
+        webSocketService.joinLiveChat(content.id!);
         Get.toNamed(kViewVideoScreenRoute);
       },
       child: Container(

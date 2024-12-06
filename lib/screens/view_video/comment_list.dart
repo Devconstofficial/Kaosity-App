@@ -6,6 +6,8 @@ import 'package:kaosity_app/utils/app_images.dart';
 import 'package:kaosity_app/utils/app_styles.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import '../../services/websocket_services.dart';
+
 class CommentList extends StatelessWidget {
   final ViewVideoController controller = Get.find();
 
@@ -93,7 +95,11 @@ class CommentList extends StatelessWidget {
               SizedBox(width: getWidth(5)),
               InkWell(
                 onTap: () {
-                  controller.addComment();
+                  final message = controller.commentController.text.trim();
+                  if (message.isNotEmpty) {
+                    WebSocketService().sendMessage(message);
+                    controller.commentController.clear();
+                  }
                 },
                 child: Image.asset(
                   kSendIcon,

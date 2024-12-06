@@ -8,3 +8,5 @@ const String kForgotPasswordScreenRoute = '/ForgotPasswordScreenRoute';
 const String kHomeScreenRoute = '/HomeScreenRoute';
 const String kViewVideoScreenRoute = '/ViewVideoScreenRoute';
 const String kProfileScreenRoute = '/ProfileScreenRoute';
+const String kOTPVerificationScreenRoute = '/OTPVerificationScreenRoute';
+const String kResetPasswordScreenRoute = '/ResetPasswordScreenRoute';

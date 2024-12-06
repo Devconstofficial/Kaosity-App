@@ -1,0 +1,1 @@
+const server_url = 'http://15.235.208.156:8000';

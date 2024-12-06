@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:kaosity_app/screens/home/video_services/video_services.dart';
 import 'package:kaosity_app/screens/view_video/controller/view_video_controller.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
 import 'package:kaosity_app/utils/app_styles.dart';
@@ -12,6 +14,7 @@ class VotingUI extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final VideoService service = VideoService();
     return Container(
       height: getHeight(169),
       width: double.infinity,
@@ -60,6 +63,10 @@ class VotingUI extends StatelessWidget {
                 return GestureDetector(
                   onTap: () {
                     controller.voteForOption(option);
+                    final String videoId = GetStorage().read('videoId');
+                    final user =GetStorage().read<Map<String, dynamic>?>('user');
+                    final String participantId = user!['_id'];
+                    service.voteParticipant(videoId, participantId);
                   },
                   child: Obx(() => Container(
                         height: getHeight(110),

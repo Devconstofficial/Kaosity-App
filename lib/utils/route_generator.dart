@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:kaosity_app/screens/auth/forget_password_screen.dart';
 import 'package:kaosity_app/screens/auth/login_screen.dart';
+import 'package:kaosity_app/screens/auth/otp_verification.dart';
 import 'package:kaosity_app/screens/auth/register_screen.dart';
+import 'package:kaosity_app/screens/auth/reset_password.dart';
 import 'package:kaosity_app/screens/home/home_screen.dart';
 import 'package:kaosity_app/screens/profile/profile_screen.dart';
 import 'package:kaosity_app/screens/starting_screens/disclaimer_screen.dart';
@@ -49,6 +51,14 @@ class RouteGenerator {
       GetPage(
           name: kProfileScreenRoute,
           page: () => ProfileScreen(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kOTPVerificationScreenRoute,
+          page: () => OtpVerification(),
+          binding: ScreenBindings()),
+      GetPage(
+          name: kResetPasswordScreenRoute,
+          page: () => ResetPassword(),
           binding: ScreenBindings()),
     ];
   }
