@@ -39,9 +39,8 @@ class HomeController extends GetxController {
   void onInit()async {
     super.onInit();
     loadData();
-     final webSocketService = WebSocketService();
+    final webSocketService = WebSocketService();
     await webSocketService.connect();
-   
     fetchAndAppendVideos();
   }
 

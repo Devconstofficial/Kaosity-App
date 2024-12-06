@@ -8,6 +8,7 @@ import 'package:kaosity_app/models/comment_model.dart';
 import 'package:kaosity_app/models/voting_model.dart';
 import 'package:kaosity_app/utils/app_colors.dart';
 import 'package:kaosity_app/utils/app_images.dart';
+import 'package:kaosity_app/utils/const.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../services/websocket_services.dart';
@@ -134,7 +135,7 @@ class ViewVideoController extends GetxController {
 
   void initializeVideo() {
   videoController = VideoPlayerController.networkUrl(
-    Uri.parse('https://jnllsh7h-8000.inc1.devtunnels.ms/user/videos/videoplayback/output.m3u8'),
+    Uri.parse('$video_url/user${GetStorage().read('path')}'),
   )..initialize().then((_) {
       update();
     });
