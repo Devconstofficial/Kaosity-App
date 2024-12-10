@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kaosity_app/custom_widgets/custom_snackbar.dart';
-import 'package:kaosity_app/utils/app_strings.dart';
 import '../services/auth_service.dart';
 
 class AuthController extends GetxController {

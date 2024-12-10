@@ -59,7 +59,7 @@ class ProfileScreen extends StatelessWidget {
                 SizedBox(height: getHeight(19)),
                 ...controller.allAchievements
                     .map((section) => buildSection(section))
-                    .toList(),
+                    ,
               ],
             );
           }),

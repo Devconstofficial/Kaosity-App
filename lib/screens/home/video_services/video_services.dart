@@ -55,7 +55,7 @@ Future<void> voteParticipant(String videoId, String participantId) async {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         log('Vote successful: ${data['message']}');
-        Get.snackbar("Success", "Congratulations, you\'ve voted successfully!!",
+        Get.snackbar("Success", "Congratulations, you've voted successfully!!",
             backgroundColor: kWhiteColor, colorText: kBlackColor);
       } else if (response.statusCode == 409) {
         throw Exception('You have already voted for this video.');

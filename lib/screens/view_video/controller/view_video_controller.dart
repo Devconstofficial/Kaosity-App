@@ -135,7 +135,7 @@ class ViewVideoController extends GetxController {
 
   void initializeVideo() {
   videoController = VideoPlayerController.networkUrl(
-    Uri.parse('$video_url/user${GetStorage().read('path')}'),
+    Uri.parse('$server_url/user${GetStorage().read('path')}'),
   )..initialize().then((_) {
       update();
     });

@@ -104,9 +104,8 @@ class FilledContainer extends StatelessWidget {
   final double totalValue;
   final double filledValue;
 
-  FilledContainer(
-      {Key? key, required this.totalValue, required this.filledValue})
-      : super(key: key);
+  const FilledContainer(
+      {super.key, required this.totalValue, required this.filledValue});
 
   @override
   Widget build(BuildContext context) {

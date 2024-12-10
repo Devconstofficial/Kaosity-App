@@ -23,7 +23,7 @@ class CustomTextField extends StatelessWidget {
   final Function()? onTap;
   final int maxLines;
   final List<TextInputFormatter>? inputFormatters;
-  CustomTextField({
+  const CustomTextField({
     super.key,
     required this.controller,
     required this.hintText,

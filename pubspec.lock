@@ -119,13 +119,14 @@ packages:
     source: hosted
     version: "4.0.0"
   flutter_screen_wake:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: flutter_screen_wake
-      sha256: "7c69295d1405a5e7b673f5fe938d116076a4e8620cacdf04e884242622296f65"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
+      path: "."
+      ref: master
+      resolved-ref: d1528da14e0f3c4e2ba53bd992563fe75ae78a29
+      url: "https://github.com/Suzefa/flutter_screen_wake.git"
+    source: git
+    version: "1.0.1"
   flutter_screenutil:
     dependency: "direct main"
     description:

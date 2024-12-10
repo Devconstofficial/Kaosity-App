@@ -58,50 +58,55 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(kBgImage),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          FadeTransition(
-            opacity: _fadeAnimation,
-            child: Container(
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            Container(
               width: double.infinity,
               height: double.infinity,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    kPrimaryColor.withOpacity(0.96),
-                    kPrimaryColor.withOpacity(0.60),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.center,
+                image: DecorationImage(
+                  image: AssetImage(kBgImage),
+                  fit: BoxFit.cover,
                 ),
               ),
             ),
-          ),
-          Positioned(
-            top: getHeight(223),
-            left: 0,
-            right: 0,
-            child: SlideTransition(
-              position: _verticalSlideAnimation,
-              child: Image.asset(
-                kLogo,
-                width: getWidth(258),
-                height: getHeight(48),
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: Container(
+                width: double.infinity,
+                height: double.infinity,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      kPrimaryColor.withOpacity(0.96),
+                      kPrimaryColor.withOpacity(0.60),
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.center,
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
+            Positioned(
+              top: getHeight(223),
+              left: 0,
+              right: 0,
+              child: SlideTransition(
+                position: _verticalSlideAnimation,
+                child: Image.asset(
+                  kLogo,
+                  width: getWidth(258),
+                  height: getHeight(48),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

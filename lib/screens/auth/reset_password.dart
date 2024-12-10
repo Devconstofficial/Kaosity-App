@@ -57,7 +57,7 @@ class ResetPassword extends StatelessWidget {
                             authController.isPasswordShow3.value =
                                 !authController.isPasswordShow3.value;
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.visibility,
                             color: kWhiteColor,
                           ))
@@ -66,7 +66,7 @@ class ResetPassword extends StatelessWidget {
                             authController.isPasswordShow3.value =
                                 !authController.isPasswordShow3.value;
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.visibility_off,
                             color: kWhiteColor,
                           )),
@@ -84,7 +84,7 @@ class ResetPassword extends StatelessWidget {
                             authController.isPasswordShow4.value =
                                 !authController.isPasswordShow4.value;
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.visibility,
                             color: kWhiteColor,
                           ))
@@ -93,7 +93,7 @@ class ResetPassword extends StatelessWidget {
                             authController.isPasswordShow4.value =
                                 !authController.isPasswordShow4.value;
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.visibility_off,
                             color: kWhiteColor,
                           )),

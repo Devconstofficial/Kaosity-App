@@ -12,7 +12,7 @@ class WebSocketService {
   WebSocketService._internal();
 
   IO.Socket? _socket;
-  final String _url = "http://192.168.1.2:3000";
+  final String _url = "http://3.133.202.73:3000";
   //15.235.208.156:3000 hosted socket url
   IO.Socket? get socket => _socket;
 
