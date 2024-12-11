@@ -9,6 +9,8 @@ import 'package:kaosity_app/utils/app_strings.dart';
 import 'package:kaosity_app/utils/app_styles.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
+import 'services/auth_service.dart';
+
 class LoginScreen extends StatelessWidget {
   final AuthController authController = Get.find();
 
@@ -103,7 +105,9 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(height: getHeight(20)),
                 CustomButton(
                   height: 44,
-                  onTap: () {},
+                  onTap: () => authController.socialLogin(
+                    provider: SocialSignInProvider.google,
+                  ),
                   title: 'Continue with Google',
                   color: kWhiteColor,
                   textColor: kBlackColor,
@@ -112,18 +116,22 @@ class LoginScreen extends StatelessWidget {
                   borderRadius: 5,
                   icon: kGoogleIcon,
                 ),
-                SizedBox(height: getHeight(14)),
-                CustomButton(
-                  height: 44,
-                  onTap: () {},
-                  title: 'Continue with Apple',
-                  color: kWhiteColor,
-                  textColor: kBlackColor,
-                  textSize: 15,
-                  width: 251,
-                  borderRadius: 5,
-                  icon: kAppleIcon,
-                ),
+                if(GetPlatform.isIOS)...[
+                  SizedBox(height: getHeight(14)),
+                  CustomButton(
+                    height: 44,
+                    onTap: () => authController.socialLogin(
+                      provider: SocialSignInProvider.apple,
+                    ),
+                    title: 'Continue with Apple',
+                    color: kWhiteColor,
+                    textColor: kBlackColor,
+                    textSize: 15,
+                    width: 251,
+                    borderRadius: 5,
+                    icon: kAppleIcon,
+                  ),
+                ],
                 SizedBox(height: getHeight(24)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
