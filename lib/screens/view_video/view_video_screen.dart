@@ -35,6 +35,7 @@ class ViewVideoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.initializeVideo();
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
