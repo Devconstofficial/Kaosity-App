@@ -15,6 +15,20 @@ class VideoPlayerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
+      if(controller.isVideoPlayerInitialized.isFalse) {
+        return SizedBox(
+          height: controller.isFullScreen.value
+              ? double.infinity
+              : getHeight(232),
+          width: double.infinity,
+          child: Container(
+            color: Colors.black,
+            height: getHeight(80),
+            width: getWidth(80),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+        );
+      }
       final currentPosition = controller.currentPosition.value;
       final duration = controller.videoController.value.duration;
       return Stack(
