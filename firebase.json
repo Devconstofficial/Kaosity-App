@@ -1,0 +1,30 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "kaosity-app",
+          "appId": "1:334969449380:android:1d911ac794c3ea0263ef31",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "kaosity-app",
+          "appId": "1:334969449380:ios:5f5efdea7c9b20e263ef31",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "kaosity-app",
+          "configurations": {
+            "android": "1:334969449380:android:1d911ac794c3ea0263ef31",
+            "ios": "1:334969449380:ios:5f5efdea7c9b20e263ef31"
+          }
+        }
+      }
+    }
+  }
+}
