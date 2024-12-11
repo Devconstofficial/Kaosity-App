@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +20,7 @@ class ViewVideoController extends GetxController {
   var isPlaying = false.obs;
   var isFullScreen = false.obs;
   var isSmallVideo = false.obs;
-
+  RxBool isVideoPlayerInitialized = false.obs;
   // Puzzle
   var isEnabled = false.obs;
   var isExpanded = false.obs;
@@ -134,10 +135,20 @@ class ViewVideoController extends GetxController {
   }
 
   void initializeVideo() {
+    if(isVideoPlayerInitialized.value) {
+      return;
+    }
+    String? previousVideoPath =GetStorage().read('path');
+    if(previousVideoPath==null) {
+      return;
+    }
+    final uri =Uri.parse('$server_url/user${previousVideoPath}');
+    log('initializeVideo-------> $uri');
   videoController = VideoPlayerController.networkUrl(
-    Uri.parse('$server_url/user${GetStorage().read('path')}'),
+    uri,
   )..initialize().then((_) {
       update();
+      isVideoPlayerInitialized.value = true;
     });
 
   videoController.addListener(() {
