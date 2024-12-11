@@ -1,4 +1,4 @@
-package com.example.kaosity_app
+package com.kaosity.app
 
 import io.flutter.embedding.android.FlutterActivity
 
