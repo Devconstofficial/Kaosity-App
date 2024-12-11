@@ -100,6 +100,12 @@ class AuthController extends GetxController {
     }
   }
 
+  void socialLogin({required SocialSignInProvider provider}) async {
+    isLoading.value = true;
+    await AuthService().loginWithSocial(provider: provider);
+    isLoading.value = false;
+  }
+
 
   @override
   void dispose() {
