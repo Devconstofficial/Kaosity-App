@@ -176,12 +176,16 @@ class PuzzleBoard extends StatelessWidget {
                 controller: textController,
                 focusNode: focusNode,
                 textAlign: TextAlign.center,
+                textInputAction: TextInputAction.done,
                 cursorWidth: 1.0,
+                onTapOutside: (_){
+                  focusNode.unfocus();
+                },
                 cursorHeight: 16,
                 onChanged: (value) {
                   controller.submitAnswer("$row-$col", value.toUpperCase());
                   if (value.isNotEmpty) {
-                    FocusScope.of(focusNode.context!).nextFocus();
+                    focusNode.requestFocus();
                   }
                 },
                 inputFormatters: [
